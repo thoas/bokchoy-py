@@ -133,19 +133,19 @@ class Job(object):
 
         result = obj.get('result')
 
-        if result is not None:
+        if result:
             self.result = unpickle(result)
         else:
             self.result = None
 
         kwargs = obj.get('kwargs')
 
-        if kwargs is not None:
+        if kwargs:
             self.kwargs = self.serializer.loads(as_text(kwargs))
 
         args = obj.get('args')
 
-        if args is not None:
+        if args:
             self.args = self.serializer.loads(as_text(args))
 
     def to_dict(self):
@@ -162,7 +162,13 @@ class Job(object):
         }
 
     def save(self):
-        self.set_many(self.to_dict(),
+        result = self.to_dict()
+
+        for k, v in result.items():
+            if v is None:
+                result[k] = ''
+
+        self.set_many(result,
                       ttl=self.result_ttl if not self.is_queued() else None)
 
     def expire(self):

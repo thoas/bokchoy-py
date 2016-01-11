@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 
 
-class WorkerCommand(BaseCommand):
+class Command(BaseCommand):
     options = BaseCommand.option_list
 
     def add_arguments(self, parser):
@@ -15,6 +15,7 @@ class WorkerCommand(BaseCommand):
                             type=str)
 
     def handle(self, *args, **options):
-        from kolkt.queue import publisher
-        publisher.consume(options['topic'].split(','),
+        from nsqueue.contrib.django.app import conductor
+
+        conductor.consume(options['topic'].split(','),
                           options['channel'])
