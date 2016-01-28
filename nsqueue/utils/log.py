@@ -46,9 +46,9 @@ def get_logger(name):
     return l
 
 
-base_logger = logger = _get_logger('queue')
-task_logger = get_logger('queue.task')
-worker_logger = get_logger('queue.worker')
+base_logger = logger = _get_logger('nsqueue')
+task_logger = get_logger('nsqueue.task')
+worker_logger = get_logger('nsqueue.worker')
 
 
 def get_task_logger(name):
