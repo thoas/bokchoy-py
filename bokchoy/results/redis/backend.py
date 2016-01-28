@@ -1,5 +1,5 @@
-from nsqueue.results import base
-from nsqueue.compat import as_text
+from bokchoy.results import base
+from bokchoy.compat import as_text
 
 
 def decode_redis_hash(h):

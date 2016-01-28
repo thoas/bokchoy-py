@@ -4,10 +4,10 @@ from os import path
 here = path.abspath(path.dirname(__file__))
 
 setup(
-    name='nsqueue',
+    name='bokchoy',
     version='1.0.0',
     description='Simple distributed task queue using NSQ',
-    url='https://github.com/ulule/nsqueue',
+    url='https://github.com/ulule/bokchoy',
     author='Ulule',
     author_email='tech@ulule.com',
     license='MIT',

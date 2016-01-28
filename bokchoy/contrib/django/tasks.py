@@ -1,6 +1,6 @@
-from nsqueue.contrib.django.app import conductor
-from nsqueue.contrib.django import defaults
-from nsqueue.utils.log import get_task_logger
+from bokchoy.contrib.django.app import conductor
+from bokchoy.contrib.django import defaults
+from bokchoy.utils.log import get_task_logger
 
 from functools import wraps
 

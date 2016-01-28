@@ -1,6 +1,6 @@
 import datetime
 
-from nsqueue.compat import as_text
+from bokchoy.compat import as_text
 
 
 def enum(name, *sequential, **named):

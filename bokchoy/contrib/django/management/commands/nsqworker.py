@@ -15,7 +15,7 @@ class Command(BaseCommand):
                             type=str)
 
     def handle(self, *args, **options):
-        from nsqueue.contrib.django.app import conductor
+        from bokchoy.contrib.django.app import conductor
 
         conductor.consume(options['topic'].split(','),
                           options['channel'])

@@ -4,9 +4,9 @@ from datetime import datetime
 
 from functools import partial
 
-from nsqueue.utils.types import enum, utcformat, utcparse, safe_int
-from nsqueue.compat import as_text
-from nsqueue.exceptions import UnpickleError
+from bokchoy.utils.types import enum, utcformat, utcparse, safe_int
+from bokchoy.compat import as_text
+from bokchoy.exceptions import UnpickleError
 
 try:
     import cPickle as pickle

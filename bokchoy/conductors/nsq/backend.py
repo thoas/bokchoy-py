@@ -1,6 +1,6 @@
-from nsqueue.conductors import base
-from nsqueue.conductors.job import Job
-from nsqueue.compat import as_text
+from bokchoy.conductors import base
+from bokchoy.conductors.job import Job
+from bokchoy.compat import as_text
 
 import nsq
 

@@ -1,4 +1,4 @@
-from nsqueue.serializers import base
+from bokchoy.serializers import base
 
 try:
     import simplejson as json
