@@ -15,7 +15,7 @@ class JobTests(Exam):
 
         self.message = message
 
-        @task(self.conductor, name='bokchoy.tasks.error', max_retries=3, retry_interval=60, topic='test')
+        @task(self.conductor, name='bokchoy.tasks.error', max_retries=3, retry_interval=60, queue='test')
         def error(text, *args, **kwargs):
             raise Exception('test')
 

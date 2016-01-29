@@ -7,7 +7,7 @@ from .app import conductor
 
 class task(base.task):
     def __init__(self, *args, **kwargs):
-        kwargs.setdefault('topic', defaults.TOPIC)
+        kwargs.setdefault('queue', defaults.QUEUE)
         kwargs.setdefault('max_retries', defaults.MAX_RETRIES)
         kwargs.setdefault('retry_interval', defaults.RETRY_INTERVAL)
         kwargs.setdefault('ttl', defaults.TTL)

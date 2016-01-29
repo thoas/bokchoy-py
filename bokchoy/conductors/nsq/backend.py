@@ -21,9 +21,9 @@ class NSQConductor(base.Conductor):
         countdown = kwargs.pop('countdown', None)
 
         if countdown:
-            self.writer.dpub(job.task.topic, countdown * 1000, job.key)
+            self.writer.dpub(job.task.queue, countdown * 1000, job.key)
         else:
-            self.writer.pub(job.task.topic, job.key)
+            self.writer.pub(job.task.queue, job.key)
 
     def consume(self, topics, channel):
         self.logger.info("NSQ worker started, topics: {}, channel:{}, addresses:{}".format(','.join(topics), channel, ','.join(self.http_addresses)))
