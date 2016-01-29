@@ -1,10 +1,11 @@
 from bokchoy.job import Job
-from bokchoy.registry import registry
 from bokchoy.utils.log import base_logger
 
 import traceback
 import sys
 import time
+
+from bokchoy import signals
 
 
 class Conductor(object):
@@ -25,13 +26,15 @@ class Conductor(object):
 
         self.logger.info('%r published' % job)
 
+        signals.job_published.send(job)
+
         return job
 
     def handle(self, message):
         job = self._handle(message)
         job.refresh()
 
-        job.task = registry.get_registered(job.name)
+        signals.job_received.send(job)
 
         self.logger.info('%r received' % job)
 
@@ -48,6 +51,7 @@ class Conductor(object):
 
             laps = time.time() - ts
 
+            job.exec_time = laps
             job.set_status_failed(commit=False)
 
             self.logger.warning('%r failed in %2.3f seconds' % (job, laps))
@@ -55,15 +59,24 @@ class Conductor(object):
             if job.can_retry():
                 job.child = self.retry(job, message)
 
+                signals.job_retried.send(job)
+
             job.save()
+
+            signals.job_failed.send(job)
+            signals.job_finished.send(job)
 
             return False
         else:
+            laps = time.time() - ts
+
             job.set_status_succeeded(commit=False)
+            job.exec_time = laps
             job.result = result
             job.save()
 
-            laps = time.time() - ts
+            signals.job_succeeded.send(job)
+            signals.job_finished.send(job)
 
             self.logger.warning('%r succeeded in %2.3f seconds' % (job, laps))
 

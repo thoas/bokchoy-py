@@ -56,6 +56,7 @@ class Job(object):
         self.result = None
         self.parent = parent
         self.child = child
+        self.exec_time = None
 
         self._name = None
         self._id = id
@@ -196,6 +197,7 @@ class Job(object):
             'kwargs': self.serializer.dumps(self.kwargs),
             'name': self.name,
             'args': self.serializer.dumps(self.args),
+            'exec_time': self.exec_time,
             'result': dumps(self.result) if self.result else None,
             'parent': self.parent.key if self.parent else None,
             'child': self.child.key if self.child else None,
