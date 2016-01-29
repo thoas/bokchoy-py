@@ -1,4 +1,5 @@
-from .job import Job
+from bokchoy.job import Job
+from bokchoy.registry import registry
 
 import traceback
 import sys
@@ -10,20 +11,6 @@ class Backend(object):
         self.serializer = serializer
         self.logger = logger
         self.result = result
-
-        self._registry = {}
-
-    def register_task(self, task):
-        self._registry[task.name] = task
-
-    def get_registered_task(self, task_name):
-        task = self._registry.get(task_name)
-
-        if task is None:
-            raise LookupError(
-                "Task '%s' not registered." % (task_name))
-
-        return task
 
     def publish(self, task, *args, **kwargs):
         job = Job(task=task,
@@ -42,7 +29,8 @@ class Backend(object):
     def handle(self, message):
         job = self._handle(message)
         job.refresh()
-        job.task = self.get_registered_task(job.name)
+
+        job.task = registry.get_registered(job.name)
 
         self.logger.info('%r received' % job)
 
@@ -57,15 +45,13 @@ class Backend(object):
 
             job.error = exc_string
 
-            max_retries = job.max_retries
-
             laps = time.time() - ts
 
-            if max_retries > 0:
-                job.max_retries = max_retries - 1
+            if job.can_retry():
+                job.max_retries -= 1
 
                 self.logger.warning('%r failed in %2.3f seconds' % (job, laps))
-                self.logger.warning('%r will be retried in %d seconds, still %d retries' % (job, job.task.retry_interval / 60.0), job.max_retries)
+                self.logger.warning('%r will be retried in %d seconds, still %d retries' % (job, job.retry_interval / 60.0), job.max_retries)
 
                 self.retry(job, message)
             else:

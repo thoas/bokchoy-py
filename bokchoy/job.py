@@ -179,6 +179,10 @@ class Job(object):
         return self.task.result_ttl
 
     @property
+    def retry_interval(self):
+        return self.task.retry_interval
+
+    @property
     def key(self):
         if self._key is not None:
             return self._key
@@ -203,3 +207,6 @@ class Job(object):
 
     def __repr__(self):  # noqa
         return 'Job({0!r}, published_at={1!r})'.format(self.key, self.published_at)
+
+    def can_retry(self):
+        return self.max_retries > 0

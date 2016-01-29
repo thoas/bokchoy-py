@@ -1,5 +1,5 @@
 from bokchoy.conductors import base
-from bokchoy.conductors.job import Job
+from bokchoy.job import Job
 from bokchoy.compat import as_text
 
 import nsq

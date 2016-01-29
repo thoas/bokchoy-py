@@ -1,6 +1,7 @@
 from bokchoy.contrib.django.app import conductor
 from bokchoy.contrib.django import defaults
 from bokchoy.utils.log import get_task_logger
+from bokchoy.registry import registry
 
 from functools import wraps
 
@@ -36,6 +37,6 @@ class task(object):
         f.delay = delay
         f.get_logger = lambda: get_task_logger(self.name)
 
-        conductor.register_task(self)
+        registry.register(self)
 
         return f
