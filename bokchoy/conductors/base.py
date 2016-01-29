@@ -78,7 +78,7 @@ class Conductor(object):
             signals.job_succeeded.send(job)
             signals.job_finished.send(job)
 
-            self.logger.warning('%r succeeded in %2.3f seconds' % (job, laps))
+            self.logger.info('%r succeeded in %2.3f seconds' % (job, laps))
 
             return True
 
@@ -101,7 +101,7 @@ class Conductor(object):
         new_job = job.retry()
         new_job.save()
 
-        self.logger.warning('%r will be retried in %2.3f seconds via %r, still %d retries' % (
+        self.logger.info('%r will be retried in %2.3f seconds via %r, still %d retries' % (
             job,
             job.retry_interval / 60.0,
             new_job,
