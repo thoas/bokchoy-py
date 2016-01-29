@@ -158,7 +158,7 @@ class Job(object):
         self.published_at = to_date(obj.get('published_at'))
         self.max_retries = safe_int(obj.get('max_retries'))
         self.error = as_text(obj.get('error'))
-        self._id = obj.get('id')
+        self._id = as_text(obj.get('id'))
 
         if not self.error:
             self.error = None
