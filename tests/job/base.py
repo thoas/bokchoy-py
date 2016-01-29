@@ -46,7 +46,7 @@ class JobTests(Exam):
         task = job.task
 
         for i in range(task.max_retries):
-            assert self.conductor.handle(job) is False
+            self.conductor.handle(job)
             assert job.is_failed() is True
 
             job = job.child
@@ -57,12 +57,13 @@ class JobTests(Exam):
 
             assert job.max_retries - (i + 1)
 
-        assert self.conductor.handle(job) is False
+        self.conductor.handle(job)
+
         assert job.child is None
 
     def test_consume_job(self):
         job = self.message.delay('test')
 
-        assert self.conductor.handle(job) is True
+        self.conductor.handle(job)
 
         assert 'test' not in _state

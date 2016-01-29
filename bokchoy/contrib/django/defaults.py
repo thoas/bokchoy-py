@@ -1,8 +1,11 @@
 from django.conf import settings as djsettings
 
+from bokchoy import defaults
+
 
 ALWAYS_EAGER = getattr(djsettings, 'BOKCHOY_ALWAYS_EAGER', False)
-DEFAULT_TOPIC = getattr(djsettings, 'BOKCHOY_DEFAULT_TOPIC', 'default')
-DEFAULT_TTL = getattr(djsettings, 'BOKCHOY_DEFAULT_TTL', 86400)
-DEFAULT_RETRY_INTERVAL = getattr(djsettings, 'BOKCHOY_DEFAULT_RETRY_INTERVAL', 180)
-DEFAULT_MAX_RETRIES = getattr(djsettings, 'BOKCHOY_DEFAULT_MAX_RETRIES', 0)
+TOPIC = getattr(djsettings, 'BOKCHOY_DEFAULT_TOPIC', 'default')
+TTL = getattr(djsettings, 'BOKCHOY_DEFAULT_TTL', defaults.TTL)
+RETRY_INTERVAL = getattr(djsettings, 'BOKCHOY_DEFAULT_RETRY_INTERVAL', defaults.RETRY_INTERVAL)
+MAX_RETRIES = getattr(djsettings, 'BOKCHOY_DEFAULT_MAX_RETRIES', defaults.MAX_RETRIES)
+TIMEOUT = getattr(djsettings, 'BOKCHOY_DEFAULT_TIMEOUT', defaults.TIMEOUT)

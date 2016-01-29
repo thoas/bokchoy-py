@@ -5,10 +5,13 @@ import traceback
 import sys
 import time
 
-from bokchoy import signals
+from bokchoy import signals, defaults
+from bokchoy.timeouts import UnixSignalDeathPenalty
 
 
 class Conductor(object):
+    death_penalty_class = UnixSignalDeathPenalty
+
     def __init__(self, serializer, result, logger=None):
         self.serializer = serializer
         self.result = result
@@ -43,7 +46,10 @@ class Conductor(object):
         result = None
 
         try:
-            result = job()
+            with self.death_penalty_class(job.timeout or defaults.TIMEOUT):
+                result = job()
+
+            job.result = result
         except Exception:
             exc_string = self.handle_exception(job, *sys.exc_info())
 
@@ -65,22 +71,17 @@ class Conductor(object):
 
             signals.job_failed.send(job)
             signals.job_finished.send(job)
-
-            return False
         else:
             laps = time.time() - ts
 
             job.set_status_succeeded(commit=False)
             job.exec_time = laps
-            job.result = result
             job.save()
 
             signals.job_succeeded.send(job)
             signals.job_finished.send(job)
 
             self.logger.info('%r succeeded in %2.3f seconds' % (job, laps))
-
-            return True
 
     def handle_exception(self, job, *exc_info):
         exc_string = ''.join(traceback.format_exception_only(*exc_info[:2]) +
