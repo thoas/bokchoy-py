@@ -36,7 +36,8 @@ JobStatus = enum(
 
 class Job(object):
     def __init__(self, id=None, published_at=None,
-                 serializer=None, key=None,
+                 serializer=None, key=None, child=None,
+                 parent=None, max_retries=None,
                  backend=None, args=None,
                  kwargs=None, task=None):
         self.task = task
@@ -45,16 +46,19 @@ class Job(object):
         self.published_at = published_at or datetime.now()
         self.backend = backend
         self.key = key
+        self.max_retries = max_retries
 
-        if task:
+        if self.max_retries is None and task:
             self.max_retries = task.max_retries
 
         self.error = None
         self.serializer = serializer
         self.result = None
+        self.parent = parent
+        self.child = child
 
         self._name = None
-        self._id = id or str(uuid.uuid4())
+        self._id = id
         self._status = JobStatus.QUEUED
 
     @property
@@ -86,10 +90,28 @@ class Job(object):
 
     @property
     def id(self):
+        if self._id is None:
+            self._id = str(uuid.uuid4())
+
         return self._id
+
+    @id.setter
+    def id(self, id):
+        self._id = id
 
     def get_status(self):
         return int(self._status)
+
+    def retry(self):
+        job = Job(task=self.task,
+                  args=self.args,
+                  serializer=self.serializer,
+                  max_retries=self.max_retries - 1,
+                  backend=self.backend,
+                  parent=self,
+                  kwargs=self.kwargs)
+
+        return job
 
     def is_failed(self):
         return self.get_status() == JobStatus.FAILED
@@ -175,6 +197,8 @@ class Job(object):
             'name': self.name,
             'args': self.serializer.dumps(self.args),
             'result': dumps(self.result) if self.result else None,
+            'parent': self.parent.key if self.parent else None,
+            'child': self.child.key if self.child else None,
         }
 
     def save(self):
@@ -200,13 +224,13 @@ class Job(object):
 
     @property
     def key(self):
-        if self._key is not None:
-            return self._key
+        if self._key is None:
+            self._key = '%s:%s' % (
+                self.name,
+                self.id
+            )
 
-        return '%s:%s' % (
-            self.name,
-            self.id
-        )
+        return self._key
 
     @key.setter
     def key(self, key):

@@ -35,5 +35,5 @@ class NSQConductor(base.Conductor):
                          backend=self.result,
                          serializer=self.serializer)
 
-    def retry(self, job, message):
+    def _retry(self, job, message):
         message.requeue(delay=job.task.retry_interval / 60.0)  # we need it in seconds

@@ -48,17 +48,12 @@ class Conductor(object):
 
             laps = time.time() - ts
 
+            job.set_status_failed(commit=False)
+
+            self.logger.warning('%r failed in %2.3f seconds' % (job, laps))
+
             if job.can_retry():
-                job.max_retries -= 1
-
-                self.logger.warning('%r failed in %2.3f seconds' % (job, laps))
-                self.logger.warning('%r will be retried in %d seconds, still %d retries' % (job, job.retry_interval / 60.0), job.max_retries)
-
-                self.retry(job, message)
-            else:
-                job.set_status_failed(commit=False)
-
-                self.logger.warning('%r failed in %2.3f seconds' % (job, laps))
+                job.child = self.retry(job, message)
 
             job.save()
 
@@ -89,7 +84,22 @@ class Conductor(object):
     def consume(self, *args, **kwargs):
         raise NotImplementedError
 
-    def retry(self):
+    def retry(self, job, message):
+        new_job = job.retry()
+        new_job.save()
+
+        self.logger.warning('%r will be retried in %2.3f seconds via %r, still %d retries' % (
+            job,
+            job.retry_interval / 60.0,
+            new_job,
+            job.max_retries
+        ))
+
+        self._retry(new_job, message)
+
+        return new_job
+
+    def _retry(self, job, message):
         raise NotImplementedError
 
     def _publish(self, job):
