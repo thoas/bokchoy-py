@@ -7,12 +7,12 @@ import nsq
 from .connection import ConnectionPool
 
 
-class NSQBackend(base.Backend):
+class NSQConductor(base.Conductor):
     def __init__(self, *args, **kwargs):
         self.tcp_addresses = kwargs.pop('tcp_addresses')
         self.http_addresses = kwargs.pop('http_addresses')
 
-        super(NSQBackend, self).__init__(*args, **kwargs)
+        super(NSQConductor, self).__init__(*args, **kwargs)
 
         self.writer = nsq.Writer(self.tcp_addresses)
         self.writer.conns = {'pool': ConnectionPool(self.tcp_addresses)}

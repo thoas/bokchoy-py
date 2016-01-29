@@ -6,7 +6,7 @@ def decode_redis_hash(h):
     return dict((as_text(k), h[k]) for k in h)
 
 
-class RedisBackend(base.Backend):
+class RedisResult(base.Result):
     def __init__(self, client):
         self.client = client
 

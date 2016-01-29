@@ -17,7 +17,7 @@ class JSONEncoder(json.JSONEncoder):
         return super(JSONEncoder, self).default(obj)
 
 
-class Serializer(base.Serializer):
+class JSONSerializer(base.Serializer):
     def dumps(self, value):
         return json.dumps(value, cls=JSONEncoder)
 

@@ -1,4 +1,4 @@
-class Backend(object):
+class Result(object):
     def hset(self, name, key, value):
         raise NotImplementedError
 

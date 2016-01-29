@@ -3,7 +3,7 @@ from bokchoy.results import base
 from collections import defaultdict
 
 
-class DummyBackend(base.Backend):
+class DummyResult(base.Result):
     def __init__(self):
         self.data = defaultdict(dict)
 

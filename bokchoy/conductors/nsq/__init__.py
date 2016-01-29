@@ -1,1 +1,1 @@
-from .backend import NSQBackend  # noqa
+from .backend import NSQConductor  # noqa

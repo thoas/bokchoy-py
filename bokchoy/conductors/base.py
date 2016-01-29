@@ -6,7 +6,7 @@ import sys
 import time
 
 
-class Backend(object):
+class Conductor(object):
     def __init__(self, serializer, logger, result):
         self.serializer = serializer
         self.logger = logger
