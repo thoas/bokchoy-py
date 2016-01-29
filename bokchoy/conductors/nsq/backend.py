@@ -18,7 +18,12 @@ class NSQConductor(base.Conductor):
         self.writer.conns = {'pool': ConnectionPool(self.tcp_addresses)}
 
     def _publish(self, job, *args, **kwargs):
-        self.writer.pub(job.task.topic, job.key)
+        countdown = kwargs.pop('countdown', None)
+
+        if countdown:
+            self.writer.dpub(job.task.topic, countdown * 1000, job.key)
+        else:
+            self.writer.pub(job.task.topic, job.key)
 
     def consume(self, topics, channel):
         self.logger.info("NSQ worker started, topics: {}, channel:{}, addresses:{}".format(','.join(topics), channel, ','.join(self.http_addresses)))
@@ -36,4 +41,4 @@ class NSQConductor(base.Conductor):
                          serializer=self.serializer)
 
     def _retry(self, job, message):
-        message.requeue(delay=job.task.retry_interval / 60.0)  # we need it in seconds
+        message.requeue(time_ms=job.task.retry_interval * 1000)
