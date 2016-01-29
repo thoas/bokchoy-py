@@ -72,13 +72,17 @@ class Job(object):
         self._name = name
 
     @classmethod
-    def fetch(cls, key, backend=None, serializer=None):
+    def fetch(cls, key, backend, serializer):
         job = cls(key=key,
                   backend=backend,
                   serializer=serializer)
 
         job.refresh()
+
         return job
+
+    def __eq__(self, job):
+        return self.to_dict() == job.to_dict()
 
     @property
     def id(self):
@@ -132,6 +136,11 @@ class Job(object):
         self.published_at = to_date(obj.get('published_at'))
         self.max_retries = safe_int(obj.get('max_retries'))
         self.error = as_text(obj.get('error'))
+        self._id = obj.get('id')
+
+        if not self.error:
+            self.error = None
+
         self.status = safe_int(obj.get('status'))
         self.name = as_text(obj.get('name'))
 

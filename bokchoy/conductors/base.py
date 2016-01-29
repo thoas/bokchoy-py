@@ -1,5 +1,6 @@
 from bokchoy.job import Job
 from bokchoy.registry import registry
+from bokchoy.utils.log import base_logger
 
 import traceback
 import sys
@@ -7,10 +8,10 @@ import time
 
 
 class Conductor(object):
-    def __init__(self, serializer, logger, result):
+    def __init__(self, serializer, result, logger=None):
         self.serializer = serializer
-        self.logger = logger
         self.result = result
+        self.logger = logger or base_logger
 
     def publish(self, task, *args, **kwargs):
         job = Job(task=task,

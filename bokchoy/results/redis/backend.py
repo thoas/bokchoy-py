@@ -39,3 +39,9 @@ class RedisResult(base.Result):
         pipe = pipe or self.client
 
         return pipe.expire(key, ttl)
+
+    def flush(self):
+        self.client.flush()
+
+    def exists(self, key):
+        return self.client.exists(key)

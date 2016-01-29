@@ -5,7 +5,7 @@ from collections import defaultdict
 
 class DummyResult(base.Result):
     def __init__(self):
-        self.data = defaultdict(dict)
+        self.flush()
 
     def hset(self, name, key, value):
         self.data[name][key] = value
@@ -27,3 +27,9 @@ class DummyResult(base.Result):
 
     def expire(self, key, ttl, pipe=None):
         pass
+
+    def flush(self):
+        self.data = defaultdict(dict)
+
+    def exists(self, key):
+        return key in self.data

@@ -19,3 +19,9 @@ class Result(object):
 
     def expire(self, key, ttl):
         raise NotImplementedError
+
+    def flush(self):
+        raise NotImplementedError
+
+    def exists(self, key):
+        raise NotImplementedError
