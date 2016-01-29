@@ -7,6 +7,7 @@ from functools import partial
 from bokchoy.utils.types import enum, utcformat, utcparse, safe_int
 from bokchoy.compat import as_text
 from bokchoy.exceptions import UnpickleError
+from bokchoy.registry import registry
 
 try:
     import cPickle as pickle
@@ -61,7 +62,10 @@ class Job(object):
         if self._name is not None:
             return self._name
 
-        return self.task.name
+        if self.task:
+            return self.task.name
+
+        return None
 
     @name.setter
     def name(self, name):
@@ -147,6 +151,9 @@ class Job(object):
 
         if args:
             self.args = self.serializer.loads(as_text(args))
+
+        if self.name:
+            self.task = registry.get_registered(self.name)
 
     def to_dict(self):
         return {

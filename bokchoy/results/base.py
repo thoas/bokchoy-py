@@ -17,5 +17,5 @@ class Backend(object):
     def hgetall(self, key):
         raise NotImplementedError
 
-    def expire(self, key, ttl, pipe=None):
+    def expire(self, key, ttl):
         raise NotImplementedError

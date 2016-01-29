@@ -1,42 +1,17 @@
-from bokchoy.contrib.django.app import conductor
 from bokchoy.contrib.django import defaults
-from bokchoy.utils.log import get_task_logger
-from bokchoy.registry import registry
 
-from functools import wraps
+from bokchoy import tasks as base
+
+from .app import conductor
 
 
-class task(object):
-    def __init__(self, name=None, timeout=None,
-                 topic=defaults.DEFAULT_TOPIC,
-                 max_retries=defaults.DEFAULT_MAX_RETRIES,
-                 retry_interval=defaults.DEFAULT_RETRY_INTERVAL,
-                 result_ttl=defaults.DEFAULT_RESULT_TTL):
-        self.name = name
-        self.timeout = timeout
-        self.topic = topic
-        self.max_retries = max_retries
-        self.retry_interval = retry_interval
-        self.result_ttl = result_ttl
-        self.func = None
+class task(base.task):
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault('topic', defaults.DEFAULT_TOPIC)
+        kwargs.setdefault('max_retries', defaults.DEFAULT_MAX_RETRIES)
+        kwargs.setdefault('retry_interval', defaults.DEFAULT_RETRY_INTERVAL)
+        kwargs.setdefault('result_ttl', defaults.DEFAULT_RESULT_TTL)
+        kwargs.setdefault('always_eager', defaults.ALWAYS_EAGER)
+        kwargs.setdefault('conductor', conductor)
 
-    def __call__(self, f):
-        name = self.name or '%s.%s' % (f.__module__, f.__name__)
-
-        self.name = name
-
-        self.func = f
-
-        @wraps(f)
-        def delay(*args, **kwargs):
-            if defaults.ALWAYS_EAGER:
-                return f(*args, **kwargs)
-
-            return conductor.publish(self, *args, **kwargs)
-
-        f.delay = delay
-        f.get_logger = lambda: get_task_logger(self.name)
-
-        registry.register(self)
-
-        return f
+        super(task, self).__init__(*args, **kwargs)
