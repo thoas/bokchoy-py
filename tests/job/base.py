@@ -48,10 +48,22 @@ class JobTests(Exam):
     def test_retry_job(self):
         job = self.error.delay('test')
 
+        task = job.task
+
+        for i in range(task.max_retries):
+            assert self.conductor.handle(job) is False
+            assert job.is_failed() is True
+
+            job = job.child
+
+            assert job is not None
+            assert job.is_queued() is True
+            assert job is not None
+
+            assert job.max_retries - (i + 1)
+
         assert self.conductor.handle(job) is False
-        assert job.is_failed() is True
-        assert job.child is not None
-        assert job.child.is_queued() is True
+        assert job.child is None
 
     def test_consume_job(self):
         job = self.message.delay('test')
