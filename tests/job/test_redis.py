@@ -22,7 +22,7 @@ def redis_is_available():
 
 requires_redis = pytest.mark.skipif(
     not redis_is_available(),
-    reason="requires elastic search server running")
+    reason="requires redis search server running")
 
 
 @requires_redis

@@ -5,7 +5,7 @@ from functools import wraps
 
 
 class task(object):
-    def __init__(self, conductor, name=None, timeout=None,
+    def __init__(self, conductor=None, name=None, timeout=None,
                  topic=None, max_retries=None,
                  always_eager=False,
                  retry_interval=None, result_ttl=None):

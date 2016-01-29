@@ -1,9 +1,6 @@
 from bokchoy.results import base
-from bokchoy.compat import as_text
 
-
-def decode_redis_hash(h):
-    return dict((as_text(k), h[k]) for k in h)
+from .utils import decode_hash
 
 
 class RedisResult(base.Result):
@@ -14,7 +11,7 @@ class RedisResult(base.Result):
         return self.client.hset(name, key, value)
 
     def hgetall(self, key):
-        return decode_redis_hash(self.client.hgetall(key))
+        return decode_hash(self.client.hgetall(key))
 
     def hset_many(self, key, items, ttl=None):
         with self.client.pipeline() as pipe:

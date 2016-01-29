@@ -1,5 +1,4 @@
 from bokchoy.tasks import task
-from bokchoy.registry import registry
 from bokchoy.job import Job
 
 from exam import before, Exam
@@ -10,13 +9,13 @@ _state = {}
 class JobTests(Exam):
     @before
     def init_tasks(self):
-        @task(self.conductor, name='kolkt.tasks.message', max_retries=3, retry_interval=60)
+        @task(self.conductor, name='bokchoy.tasks.message', max_retries=3, retry_interval=60)
         def message(text, *args, **kwargs):
             _state['message'] = text
 
         self.message = message
 
-        @task(self.conductor, name='kolkt.tasks.error', max_retries=3, retry_interval=60, topic='test')
+        @task(self.conductor, name='bokchoy.tasks.error', max_retries=3, retry_interval=60, topic='test')
         def error(text, *args, **kwargs):
             raise Exception('test')
 
@@ -25,10 +24,6 @@ class JobTests(Exam):
     @before
     def init_result(self):
         self.result.flush()
-
-    def test_registry(self):
-        assert registry.get_registered('kolkt.tasks.message') is not None
-        assert registry.get_registered('kolkt.tasks.error') is not None
 
     def test_execute_job(self):
         job = self.message.delay('test')
