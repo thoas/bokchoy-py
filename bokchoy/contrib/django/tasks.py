@@ -10,7 +10,7 @@ class task(base.task):
         kwargs.setdefault('topic', defaults.DEFAULT_TOPIC)
         kwargs.setdefault('max_retries', defaults.DEFAULT_MAX_RETRIES)
         kwargs.setdefault('retry_interval', defaults.DEFAULT_RETRY_INTERVAL)
-        kwargs.setdefault('result_ttl', defaults.DEFAULT_RESULT_TTL)
+        kwargs.setdefault('ttl', defaults.DEFAULT_TTL)
         kwargs.setdefault('always_eager', defaults.ALWAYS_EAGER)
         kwargs.setdefault('conductor', conductor)
 
