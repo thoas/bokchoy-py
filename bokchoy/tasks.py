@@ -8,14 +8,14 @@ class task(object):
     def __init__(self, conductor=None, name=None, timeout=None,
                  topic=None, max_retries=None,
                  always_eager=False,
-                 retry_interval=None, result_ttl=None):
+                 retry_interval=None, ttl=None):
         self.conductor = conductor
         self.name = name
         self.timeout = timeout
         self.topic = topic
         self.max_retries = max_retries
         self.retry_interval = retry_interval
-        self.result_ttl = result_ttl
+        self.ttl = ttl
         self.func = None
         self.always_eager = always_eager
 

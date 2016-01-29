@@ -209,14 +209,14 @@ class Job(object):
                 result[k] = ''
 
         self.set_many(result,
-                      ttl=self.result_ttl if not self.is_queued() else None)
+                      ttl=self.ttl if not self.is_queued() else None)
 
     def expire(self):
-        self.backend.expire(self.key, self.result_ttl)
+        self.backend.expire(self.key, self.ttl)
 
     @property
-    def result_ttl(self):
-        return self.task.result_ttl
+    def ttl(self):
+        return self.task.ttl
 
     @property
     def retry_interval(self):
