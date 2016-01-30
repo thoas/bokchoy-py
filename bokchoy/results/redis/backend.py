@@ -7,13 +7,10 @@ class RedisResult(base.Result):
     def __init__(self, client):
         self.client = client
 
-    def hset(self, name, key, value):
+    def set(self, name, key, value):
         return self.client.hset(name, key, value)
 
-    def hgetall(self, key):
-        return decode_hash(self.client.hgetall(key))
-
-    def hset_many(self, key, items, ttl=None):
+    def set_many(self, key, items, ttl=None):
         with self.client.pipeline() as pipe:
             for k, v in items.items():
                 pipe.hset(key, k, v)
@@ -23,14 +20,11 @@ class RedisResult(base.Result):
 
             pipe.execute()
 
-    def set(self, key, value):
-        return self.client.set(key, value)
+    def get(self, name, key=None):
+        if key is not None:
+            return self.client.hget(name, key)
 
-    def get(self, key):
-        return self.client.get(key)
-
-    def hget(self, name, key):
-        return self.client.hget(name, key)
+        return decode_hash(self.client.hgetall(name))
 
     def expire(self, key, ttl, pipe=None):
         pipe = pipe or self.client

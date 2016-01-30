@@ -7,23 +7,17 @@ class DummyResult(base.Result):
     def __init__(self):
         self.flush()
 
-    def hset(self, name, key, value):
+    def set(self, name, key, value):
         self.data[name][key] = value
 
-    def hgetall(self, key):
-        return self.data[key]
-
-    def hset_many(self, key, items, ttl=None):
+    def set_many(self, key, items, ttl=None):
         self.data[key].update(items)
 
-    def set(self, key, value):
-        self.data[key] = value
+    def get(self, name, key=None):
+        if key is not None:
+            return (self.data.get(name) or {}).get(key)
 
-    def get(self, key):
-        return self.data.get(key)
-
-    def hget(self, name, key):
-        return (self.data.get(key) or {}).get(key)
+        return self.data.get(name)
 
     def expire(self, key, ttl, pipe=None):
         pass

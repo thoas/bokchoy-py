@@ -136,16 +136,16 @@ class Job(object):
         return self.set_status(JobStatus.SUCCEEDED, commit=commit)
 
     def set(self, key, value):
-        self.backend.hset(self.key, key, value)
+        self.backend.set(self.key, key, value)
 
     def set_many(self, items, ttl=None):
-        self.backend.hset_many(self.key, items, ttl=ttl)
+        self.backend.set_many(self.key, items, ttl=ttl)
 
     def get(self, key):
-        self.backend.hget(self.key, key)
+        self.backend.get(self.key, key)
 
     def refresh(self):
-        obj = self.backend.hgetall(self.key)
+        obj = self.backend.get(self.key)
 
         if len(obj) == 0:
             return None

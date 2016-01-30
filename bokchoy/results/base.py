@@ -1,20 +1,11 @@
 class Result(object):
-    def hset(self, name, key, value):
+    def set(self, name, key, value):
         raise NotImplementedError
 
-    def set(self, key, value):
+    def get(self, name, key=None):
         raise NotImplementedError
 
-    def get(self, key):
-        raise NotImplementedError
-
-    def hget(self, name, key):
-        raise NotImplementedError
-
-    def hset_many(self, key, items, ttl=None):
-        raise NotImplementedError
-
-    def hgetall(self, key):
+    def set_many(self, key, items, ttl=None):
         raise NotImplementedError
 
     def expire(self, key, ttl):
