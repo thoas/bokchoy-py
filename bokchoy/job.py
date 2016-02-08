@@ -37,7 +37,7 @@ JobStatus = enum(
 class Job(object):
     def __init__(self, id=None, published_at=None,
                  serializer=None, key=None, child=None,
-                 parent=None, max_retries=None,
+                 parent=None, max_retries=None, timeout=None,
                  backend=None, args=None,
                  kwargs=None, task=None):
         self.task = task
@@ -47,9 +47,14 @@ class Job(object):
         self.backend = backend
         self.key = key
         self.max_retries = max_retries
+        self.timeout = timeout
 
-        if self.max_retries is None and task:
-            self.max_retries = task.max_retries
+        if task:
+            if self.max_retries is None:
+                self.max_retries = task.max_retries
+
+            if self.timeout is None:
+                self.timeout = task.timeout
 
         self.error = None
         self.serializer = serializer
