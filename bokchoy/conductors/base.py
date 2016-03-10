@@ -62,26 +62,34 @@ class Conductor(object):
 
             self.logger.warning('%r failed in %2.3f seconds' % (job, laps))
 
+            result = False
+
             if job.can_retry():
                 job.child = self.retry(job, message)
 
                 signals.job_retried.send(job)
 
+                result = True
+
             job.save()
 
             signals.job_failed.send(job)
             signals.job_finished.send(job)
-        else:
-            laps = time.time() - ts
 
-            job.set_status_succeeded(commit=False)
-            job.exec_time = laps
-            job.save()
+            return result
 
-            signals.job_succeeded.send(job)
-            signals.job_finished.send(job)
+        laps = time.time() - ts
 
-            self.logger.info('%r succeeded in %2.3f seconds' % (job, laps))
+        job.set_status_succeeded(commit=False)
+        job.exec_time = laps
+        job.save()
+
+        signals.job_succeeded.send(job)
+        signals.job_finished.send(job)
+
+        self.logger.info('%r succeeded in %2.3f seconds' % (job, laps))
+
+        return True
 
     def handle_exception(self, job, *exc_info):
         exc_string = ''.join(traceback.format_exception_only(*exc_info[:2]) +
