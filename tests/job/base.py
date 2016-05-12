@@ -47,6 +47,9 @@ class JobTests(Exam):
 
         for i in range(task.max_retries):
             self.conductor.handle(job)
+
+            job.refresh()
+
             assert job.is_failed() is True
 
             job = job.child

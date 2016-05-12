@@ -1,5 +1,4 @@
 from bokchoy.conductors import base
-from bokchoy.job import Job
 from bokchoy.compat import as_text
 
 import nsq
@@ -35,10 +34,8 @@ class NSQConductor(base.Conductor):
                        lookupd_poll_interval=15)
         nsq.run()
 
-    def _handle(self, message):
-        return Job.fetch(key=as_text(message.body),
-                         backend=self.result,
-                         serializer=self.serializer)
+    def _get_job_id(self, message):
+        return as_text(message.body)
 
     def _retry(self, job, message):
         message.requeue(time_ms=job.task.retry_interval * 1000)

@@ -8,14 +8,14 @@ class DummyConductor(base.Conductor):
         super(DummyConductor, self).__init__(*args, **kwargs)
 
     def _publish(self, job, *args, **kwargs):
-        self.jobs.append(job)
+        self.jobs.append(job.key)
 
     def consume(self, topics, channel):
         while True:
-            self._handle(self.jobs.pop())
+            self.handle(self.jobs.pop())
 
-    def _handle(self, message):
-        return message
+    def _get_job_id(self, message):
+        return message.key
 
     def _retry(self, job, message):
-        self.jobs.append(job)
+        self.jobs.append(job.key)

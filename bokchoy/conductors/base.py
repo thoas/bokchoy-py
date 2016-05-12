@@ -34,8 +34,9 @@ class Conductor(object):
         return job
 
     def handle(self, message):
-        job = self._handle(message)
-        job.refresh()
+        job = Job.fetch(key=self._get_job_id(message),
+                        backend=self.result,
+                        serializer=self.serializer)
 
         signals.job_received.send(job)
 
@@ -127,5 +128,5 @@ class Conductor(object):
     def _publish(self, job):
         raise NotImplementedError
 
-    def _handle(self, message):
+    def _get_job_id(self, message):
         raise NotImplementedError

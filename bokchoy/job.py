@@ -166,10 +166,15 @@ class Job(object):
         self.error = as_text(obj.get('error'))
         self._id = as_text(obj.get('id'))
 
+        child_key = as_text(obj.get('child'))
+
+        if child_key:
+            self.child = Job.fetch(child_key, backend=self.backend, serializer=self.serializer)
+
         if not self.error:
             self.error = None
 
-        self.status = safe_int(obj.get('status'))
+        self._status = safe_int(obj.get('status'))
         self.name = as_text(obj.get('name'))
 
         result = obj.get('result')
