@@ -2,8 +2,6 @@ from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
-    options = BaseCommand.option_list
-
     def add_arguments(self, parser):
         parser.add_argument('--topic',
                             dest='topic',
